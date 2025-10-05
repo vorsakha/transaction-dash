@@ -9,15 +9,14 @@ import {
 } from "@/components/ui/card";
 import { useBalance } from "@/hooks/use-balance";
 import { useAccount } from "wagmi";
-import { DollarSign, TrendingUp, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { LoadingSpinner } from "@/components/custom/loading-spinner";
+import { DollarSign, TrendingUp } from "lucide-react";
 import { ErrorMessage } from "@/components/custom/error-message";
 import { formatBalance } from "@/utils/formatting";
+import { chain } from "@/config/wagmi";
 
 export const BalanceCard = () => {
   const { isConnected } = useAccount();
-  const { data: balance, error, isLoading, refetch } = useBalance();
+  const { data: balance, error, isLoading } = useBalance();
 
   if (!isConnected) {
     return (
@@ -37,33 +36,18 @@ export const BalanceCard = () => {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <div>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
-            USDC Balance
-          </CardTitle>
-          <CardDescription>Your current USDC token balance</CardDescription>
-        </div>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => refetch()}
-          disabled={isLoading}
-          aria-label="Refresh balance"
-        >
-          {isLoading ? (
-            <LoadingSpinner size="sm" />
-          ) : (
-            <RefreshCw className="h-4 w-4" />
-          )}
-        </Button>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <DollarSign className="h-5 w-5" />
+          USDC Balance
+        </CardTitle>
+        <CardDescription>Your current USDC token balance</CardDescription>
       </CardHeader>
       <CardContent>
         {error && <ErrorMessage message="Failed to load balance" />}
         {isLoading ? (
           <div className="flex items-center justify-center h-12">
-            <LoadingSpinner data-testid="loading-spinner" />
+            Loading...
           </div>
         ) : balance ? (
           <div className="space-y-2">
@@ -72,7 +56,7 @@ export const BalanceCard = () => {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <TrendingUp className="h-4 w-4" />
-              <span>Sepolia Testnet</span>
+              <span>{chain.name}</span>
             </div>
           </div>
         ) : null}

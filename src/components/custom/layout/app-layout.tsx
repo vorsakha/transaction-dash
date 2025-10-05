@@ -2,14 +2,20 @@
 
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
+import { Wallet, RefreshCw } from "lucide-react";
 import { WalletConnector } from "@/components/custom/wallet/connector";
+import { useGlobalRefresh } from "@/hooks/use-global-refresh";
+import { LoadingSpinner } from "@/components/custom/loading-spinner";
+import { useAccount } from "wagmi";
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export const AppLayout = ({ children }: AppLayoutProps) => {
+  const { refreshAll, isRefreshing } = useGlobalRefresh();
+  const { isConnected } = useAccount();
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -22,7 +28,24 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               <h1 className="text-xl font-bold">USDC Dashboard</h1>
             </div>
           </div>
-          <WalletConnector />
+          <div className="flex items-center gap-2">
+            {isConnected && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={refreshAll}
+                disabled={isRefreshing}
+                aria-label="Refresh all data"
+              >
+                {isRefreshing ? (
+                  <LoadingSpinner size="sm" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+              </Button>
+            )}
+            <WalletConnector />
+          </div>
         </div>
       </header>
 
@@ -35,8 +58,14 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
               USDC Transaction Dashboard - Built with Next.js, viem, and wagmi
             </div>
             <div className="flex items-center gap-4 mt-4 md:mt-0">
-              <Button variant="ghost" size="sm">
-                GitHub
+              <Button variant="ghost" size="sm" asChild>
+                <a
+                  href="https://github.com/vorsakha/transaction-dash"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  GitHub
+                </a>
               </Button>
             </div>
           </div>

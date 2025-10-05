@@ -11,9 +11,7 @@ import {
 } from "@/components/ui/table";
 import { useTransactions } from "@/hooks/use-transactions";
 import { useAccount } from "wagmi";
-import { LoadingSpinner } from "@/components/custom/loading-spinner";
 import { ErrorMessage } from "@/components/custom/error-message";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -28,10 +26,12 @@ import {
   formatDateTime,
   formatTransactionHash,
 } from "@/utils/formatting";
-import { ArrowUpDown, Search, ExternalLink, Eye } from "lucide-react";
+import { Search, ExternalLink, Eye } from "lucide-react";
 import { TransactionDetailModal } from "@/components/custom/dashboard/transaction-detail-modal";
 import type { TransactionFilters } from "@/types";
 import { chain } from "@/config/wagmi";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/custom/loading-spinner";
 
 export const TransactionTable = () => {
   const { isConnected } = useAccount();
@@ -45,12 +45,7 @@ export const TransactionTable = () => {
     null,
   );
 
-  const {
-    data: transactions,
-    error,
-    isLoading,
-    refetch,
-  } = useTransactions(filters);
+  const { data: transactions, error, isLoading } = useTransactions(filters);
 
   const filteredTransactions =
     transactions?.filter(
@@ -78,7 +73,7 @@ export const TransactionTable = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
         <div className="flex gap-2 items-center">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -99,18 +94,6 @@ export const TransactionTable = () => {
             </SelectContent>
           </Select>
         </div>
-        <Button
-          variant="outline"
-          onClick={() => refetch()}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <LoadingSpinner size="sm" />
-          ) : (
-            <ArrowUpDown className="h-4 w-4" />
-          )}
-          Refresh
-        </Button>
       </div>
 
       {error && <ErrorMessage message="Failed to load transactions" />}
