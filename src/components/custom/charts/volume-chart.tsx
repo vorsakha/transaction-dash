@@ -20,7 +20,7 @@ import { useAccount } from "wagmi";
 import { LoadingSpinner } from "@/components/custom/loading-spinner";
 import { ErrorMessage } from "@/components/custom/error-message";
 import { formatBalance } from "@/utils/formatting";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import type { Transaction } from "@/types";
 import { BarChart3, TrendingUp } from "lucide-react";
@@ -48,6 +48,48 @@ export const VolumeChart = () => {
     offset: 100,
   });
   const [chartType, setChartType] = useState<"bar" | "area">("bar");
+
+  const transactionsByDate = useMemo(
+    () =>
+      ((transactions as Transaction[]) || []).reduce((acc, tx) => {
+        const date = new Date(
+          parseInt(tx.timeStamp) * 1000,
+        ).toLocaleDateString();
+        if (!acc[date]) {
+          acc[date] = {
+            sent: 0,
+            received: 0,
+            count: 0,
+          };
+        }
+
+        const amount = parseFloat(formatBalance(tx.value));
+        if (
+          tx.from.toLowerCase() ===
+          (transactions as Transaction[])[0].from.toLowerCase()
+        ) {
+          acc[date].sent += amount;
+        } else {
+          acc[date].received += amount;
+        }
+        acc[date].count += 1;
+
+        return acc;
+      }, {} as Record<string, { sent: number; received: number; count: number }>),
+    [transactions],
+  );
+
+  const chartData = useMemo(() => {
+    const sortedDates = Object.keys(transactionsByDate)
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+      .slice(-7);
+
+    return sortedDates.map((date) => ({
+      date,
+      sent: transactionsByDate[date].sent,
+      received: transactionsByDate[date].received,
+    }));
+  }, [transactionsByDate]);
 
   if (!isConnected) {
     return (
@@ -118,43 +160,6 @@ export const VolumeChart = () => {
       </Card>
     );
   }
-
-  const transactionsByDate = (transactions as Transaction[]).reduce(
-    (acc, tx) => {
-      const date = new Date(parseInt(tx.timeStamp) * 1000).toLocaleDateString();
-      if (!acc[date]) {
-        acc[date] = {
-          sent: 0,
-          received: 0,
-          count: 0,
-        };
-      }
-
-      const amount = parseFloat(formatBalance(tx.value));
-      if (
-        tx.from.toLowerCase() ===
-        (transactions as Transaction[])[0].from.toLowerCase()
-      ) {
-        acc[date].sent += amount;
-      } else {
-        acc[date].received += amount;
-      }
-      acc[date].count += 1;
-
-      return acc;
-    },
-    {} as Record<string, { sent: number; received: number; count: number }>,
-  );
-
-  const sortedDates = Object.keys(transactionsByDate)
-    .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-    .slice(-7);
-
-  const chartData = [...sortedDates, ...sortedDates].map((date) => ({
-    date,
-    sent: transactionsByDate[date].sent,
-    received: transactionsByDate[date].received,
-  }));
 
   return (
     <Card>
