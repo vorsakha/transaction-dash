@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# USDC Transaction Dashboard
 
-## Getting Started
+A modern, responsive single-page application that interfaces with the Etherscan API to display and interact with USDC transactions on Ethereum testnet.
 
-First, run the development server:
+## Setup Instructions
 
+### Prerequisites
+
+- Node.js 18+
+- npm
+- MetaMask browser extension
+
+### Installation
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up environment variables (optional):
+```bash
+cp .env.example .env
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Add your Etherscan API key for enhanced rate limits:
+```env
+NEXT_PUBLIC_ETHERSCAN_API_KEY=your_etherscan_api_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Start the development server:
+```bash
+npm run dev
+```
 
-## Learn More
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-To learn more about Next.js, take a look at the following resources:
+## Features Implemented
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **MetaMask Integration**: Connect to MetaMask wallet with one click
+- **Real-time USDC Balance**: View current USDC balance on Sepolia testnet
+- **Transaction History**: Complete transaction history with filtering and sorting
+- **Transaction Volume Charts**: Visual representation of transaction patterns over time
+- **USDC Transfer**: Send USDC to any Ethereum address with gas estimation
+- **Transaction Details**: Detailed view of individual transactions with confirmations
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **Accessible**: WCAG compliant with keyboard navigation and screen reader support
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technical Decisions and Architecture
 
-## Deploy on Vercel
+### Tech Stack
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript for type safety
+- **Styling**: Tailwind CSS
+- **Blockchain**: wagmi + viem for Ethereum interactions
+- **State Management**: React Query for server state
+- **Charts**: Recharts for data visualization
+- **UI Components**: Radix UI for accessible primitives
+- **Testing**: Jest + React Testing Library
+- **API**: Etherscan API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### API Implementation
+The following Etherscan API endpoints are implemented:
+- **Get USDC Token Transfers**: Fetch USDC transaction history for an address
+- **Get USDC Balance**: Retrieve current USDC balance for an address
+- **Get Transaction Details**: Fetch detailed information for specific transactions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Architecture
+- **Component-Based**: Modular, reusable components with clear separation of concerns
+- **Custom Hooks**: Encapsulated business logic in custom hooks for reusability
+- **State Management**: React Query for server state, local state for UI
+- **Error Handling**: Comprehensive error handling with user-friendly messages
+- **Caching**: React Query with 1-minute stale time and 5-minute garbage collection
+
+### Key Technical Decisions
+- **wagmi + viem**: Chose for better React integration and modern TypeScript support
+- **React Query**: Implemented for robust caching, background updates, and error handling
+- **Radix UI**: Used for accessible, unstyled components with full customization
+- **Recharts**: Better React integration and TypeScript support for charts
+
+## Known Limitations or Future Improvements
+
+### Current Limitations
+- **Test Coverage**: Low overall test coverage needs improvement
+- **Single Token**: USDC-only implementation
+
+### Future Improvements
+- **Enhanced Testing**: Increase test coverage
+- **Advanced Analytics**: More sophisticated transaction analytics
+- **Dark Mode**: Implement dark mode toggle (CSS is prepared)
+- **Notification System**: Transaction status notifications
+- **Export Features**: Export transaction history to CSV
