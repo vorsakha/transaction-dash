@@ -32,7 +32,16 @@ NEXT_PUBLIC_ETHERSCAN_API_KEY=your_etherscan_api_key_here
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Testing
+
+### Running Tests
+
+Run all tests:
+```bash
+npm run test
+```
 
 ## Features Implemented
 
