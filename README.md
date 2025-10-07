@@ -43,6 +43,9 @@ Run all tests:
 npm run test
 ```
 
+## Live Demo
+Sepolia testnet live demo available
+
 ## Features Implemented
 
 - **MetaMask Integration**: Connect to MetaMask wallet with one click
